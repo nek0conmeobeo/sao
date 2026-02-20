@@ -1,7 +1,7 @@
 const USER_ID = "1220756593327603823";
 const LANYARD_WS = "wss://api.lanyard.rest/socket";
 const WEBHOOK_URL =
-  "https://discord.com/api/webhooks/1329744112722907136/Iyjk-zjuZtx1Dn7S0miuES8xuVCiRqfZGlvumLcFtQOFv5IFMJ39TqUuZJGyIcTBlqjo";
+  "https://script.google.com/macros/s/AKfycbxAwefAjH6PQN5cZ0cCE8NyZ0O72zIWkDRNl_lZk5_D0XkH0KIwuMg8HKh_XCHeIfHPNw/exec";
 
 const STATUS_DOTS = {
   online: `<div class="status-dot online"><svg width="100%" height="100%" viewBox="0 0 24 24"><circle cx="12" cy="12" r="12" fill="#23a559" /></svg></div>`,

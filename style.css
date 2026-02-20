@@ -245,16 +245,70 @@ body {
   grid-template-columns: repeat(3, 1fr);
   gap: 8px;
   align-items: center;
+  overflow: visible !important;
 }
-.favorite-games-card img {
+
+.game-wrapper {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.game-wrapper img {
   width: 100%;
   aspect-ratio: 1 / 1;
   object-fit: cover;
   border-radius: 6px;
   transition: transform 0.2s ease;
 }
-.favorite-games-card img:hover {
+
+.game-wrapper:hover img {
   transform: scale(1.05);
+}
+
+.game-wrapper::after {
+  content: attr(data-name);
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%) translateY(5px);
+  background-color: #111214;
+  color: #dbdee1;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+  pointer-events: none;
+  z-index: 100;
+}
+
+.game-wrapper::before {
+  content: "";
+  position: absolute;
+  bottom: calc(100% + 3px);
+  left: 50%;
+  transform: translateX(-50%) translateY(5px);
+  border-width: 5px;
+  border-style: solid;
+  border-color: #111214 transparent transparent transparent;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.2s ease;
+  pointer-events: none;
+  z-index: 100;
+}
+
+.game-wrapper:hover::after,
+.game-wrapper:hover::before {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
 }
 
 .activity-body {
@@ -687,7 +741,7 @@ body {
   flex-direction: column;
   align-items: center;
   pointer-events: none;
-  transform: scale(0.8);
+  transform: scale(1);
   transform-origin: right bottom;
 }
 .moe-counter-wrapper img {
@@ -698,7 +752,7 @@ body {
 }
 .moe-text {
   font-family: "Courier New", Courier, monospace;
-  font-size: 20px;
+  font-size: 17px;
   font-weight: 800;
   color: rgba(255, 255, 255, 0.889);
   text-shadow: 0 2px 4px #000000;
@@ -783,17 +837,31 @@ body {
     align-items: flex-start;
     gap: 10px;
   }
+
   .poetry-box p:nth-child(3) {
-    margin-left: 40px;
+    margin-left: 160px !important;
   }
+
   .bottom-split-container {
     grid-template-columns: 1fr;
     gap: 12px;
+    min-width: 0;
   }
+
+  .discord-section,
+  .activity-card,
+  .feedback-card,
+  .favorite-games-card,
+  .activity-body {
+    min-width: 0;
+  }
+
   .activity-details {
     min-width: 0;
     overflow: hidden;
+    flex: 1;
   }
+
   .activity-name,
   .activity-state,
   .activity-time-text,
@@ -804,21 +872,31 @@ body {
     max-width: 100%;
     display: block;
   }
+
   .social-grid,
   .skills-grid {
     grid-template-columns: repeat(2, 1fr);
-    gap: 8px;
+    gap: 10px;
   }
   .social-btn {
-    padding: 12px 10px;
+    padding: 14px 10px;
     font-size: 11px;
     justify-content: center;
+    height: 100%;
   }
-  .skill-box,
+  .skill-box {
+    padding: 14px 12px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 8px;
+  }
   .skill-name {
-    padding: 10px;
     font-size: 11px;
+    padding: 0;
+    margin: 0;
   }
+
   .time-display {
     font-size: 40px;
   }
@@ -848,14 +926,13 @@ body {
   }
   .pos-q3,
   .pos-q4 {
-    width: 180px;
-    opacity: 0.8;
+    width: 190px;
   }
   .pos-q3 {
     left: -40px;
   }
   .pos-q4 {
-    right: -40px;
+    right: -43px;
   }
   .status-icon-box {
     width: 22px;
@@ -870,6 +947,9 @@ body {
 }
 
 @media (max-width: 480px) {
+  .poetry-box p:nth-child(3) {
+    margin-left: 130px !important;
+  }
   .activity-image-wrapper {
     width: 60px;
     height: 60px;
