@@ -107,7 +107,7 @@ function renderActivity(acts) {
       const d = JSON.parse(c);
       lCard.innerHTML = `<div class="activity-body"><div class="activity-image-wrapper"><img src="${d.i}" class="large-image" style="filter:grayscale(40%);opacity:0.8;"></div><div class="activity-details"><div class="activity-name" style="color:#949ba4;">${d.t}</div><div class="activity-state" style="color:#72767d;">${d.a}</div><div class="spotify-progress-row"><span style="font-size:11px;font-weight:700;color:#1db954;text-transform:uppercase;margin-top:5px;">Recently Played</span></div></div></div>`;
     } else {
-      lCard.innerHTML = `<div class="activity-body"><div class="activity-image-wrapper" style="background:transparent;"><img src="empty.png" class="large-image" style="background:transparent;object-fit:contain;border-radius:0;"></div><div class="activity-details"><div class="activity-name" style="color:#f2f3f5;font-weight:600;font-size:14px;">Not Listening</div><div class="activity-state" style="color:#949ba4;font-size:13px;">No song currently playing.</div></div></div>`;
+      lCard.innerHTML = `<div class="activity-body"><div class="activity-image-wrapper" style="background:transparent;"><img src="empty.png" class="large-image" style="background:transparent;object-fit:contain;border-radius:0;"></div><div class="activity-details"><div class="activity-name" style="color:#f2f3f5;font-weight:600;font-size:14px;">Not Listening</div><div class="activity-state" style="color:#949ba4;font-size:13px;">No song currently playing</div></div></div>`;
     }
   }
 }

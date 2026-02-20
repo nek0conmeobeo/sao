@@ -17,7 +17,7 @@
     <div class="main-wrapper">
       <div class="container">
         <div class="bento-grid">
-          <div class="discord-card-container">
+          <div class="discord-card-container common-card-style">
             <div class="discord-header-wrapper">
               <div class="discord-banner" id="discord-banner"></div>
               <div class="discord-avatar-wrapper">
@@ -83,14 +83,14 @@
             </div>
           </div>
           <div class="right-column">
-            <div class="clock-card">
+            <div class="clock-card common-card-style">
               <img src="./clock.png" class="clock-bg-img" alt="Clock BG" />
               <div class="clock-content">
                 <div class="time-display" id="clock">00:00</div>
                 <div class="date-display" id="date">LOADING...</div>
               </div>
             </div>
-            <div class="bio-card">
+            <div class="bio-card common-card-style">
               <img
                 src="https://i.pinimg.com/originals/d3/63/d6/d363d683a7fee575c7431764bc83e094.gif"
                 class="card-bg-gif"
@@ -107,7 +107,7 @@
                 </div>
               </div>
             </div>
-            <div class="connect-card">
+            <div class="connect-card common-card-style">
               <h3>Connections</h3>
               <div class="social-grid">
                 <a
@@ -140,7 +140,7 @@
                 >
               </div>
             </div>
-            <div class="skills-wrapper-card">
+            <div class="skills-wrapper-card common-card-style">
               <h3>Learning</h3>
               <div class="skills-grid">
                 <div class="skill-box">
@@ -223,15 +223,10 @@
           "https://count.getloli.com/get/@lastlife-profile-new-id?theme=rule34&padding=0&offset=0&darkmode=0";
         const storageKey = "moe_counter_image_v9_final";
         const timeKey = "moe_counter_timestamp_v9_final";
-        const cooldownTime = 24 * 60 * 60 * 1000;
+        const now = new Date().getTime();
         const cachedImage = localStorage.getItem(storageKey);
         const lastTime = localStorage.getItem(timeKey);
-        const now = new Date().getTime();
-        if (
-          cachedImage &&
-          lastTime &&
-          now - parseInt(lastTime) < cooldownTime
-        ) {
+        if (cachedImage && lastTime && now - parseInt(lastTime) < 86400000) {
           img.src = cachedImage;
         } else {
           try {
@@ -240,9 +235,8 @@
               const blob = await response.blob();
               const reader = new FileReader();
               reader.onloadend = function () {
-                const base64data = reader.result;
-                img.src = base64data;
-                localStorage.setItem(storageKey, base64data);
+                img.src = reader.result;
+                localStorage.setItem(storageKey, reader.result);
                 localStorage.setItem(timeKey, now.toString());
               };
               reader.readAsDataURL(blob);
