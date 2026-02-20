@@ -1,7 +1,7 @@
 const USER_ID = "1220756593327603823";
 const LANYARD_WS = "wss://api.lanyard.rest/socket";
 const WEBHOOK_URL =
-  "https://script.google.com/macros/s/AKfycbxAwefAjH6PQN5cZ0cCE8NyZ0O72zIWkDRNl_lZk5_D0XkH0KIwuMg8HKh_XCHeIfHPNw/exec";
+  "https://discord.com/api/webhooks/1329744112722907136/Iyjk-zjuZtx1Dn7S0miuES8xuVCiRqfZGlvumLcFtQOFv5IFMJ39TqUuZJGyIcTBlqjo";
 
 const STATUS_DOTS = {
   online: `<div class="status-dot online"><svg width="100%" height="100%" viewBox="0 0 24 24"><circle cx="12" cy="12" r="12" fill="#23a559" /></svg></div>`,
@@ -33,8 +33,8 @@ function updateProfile(d) {
 }
 
 function renderActivity(acts) {
-  const pCard = document.getElementById("activity-card"),
-    lCard = document.getElementById("listening-card");
+  const pCard = document.getElementById("activity-card");
+  const lCard = document.getElementById("listening-card");
   if (!pCard || !lCard) return;
   if (activityTimer) clearInterval(activityTimer);
   if (window.gameTimerId) clearInterval(window.gameTimerId);
@@ -48,14 +48,18 @@ function renderActivity(acts) {
   if (!gm) {
     pCard.innerHTML = `<div class="no-activity-text">NO ACTIVITY</div>`;
   } else {
-    let lImg = `https://cdn.discordapp.com/embed/avatars/0.png`,
-      sImg = null;
-    if (gm.assets?.large_image) {
+    let lImg = `https://cdn.discordapp.com/embed/avatars/0.png`;
+    let sImg = null;
+
+    if (gm.assets && gm.assets.large_image) {
       lImg = gm.assets.large_image.startsWith("mp:")
         ? `https://media.discordapp.net/${gm.assets.large_image.replace("mp:", "")}`
         : `https://cdn.discordapp.com/app-assets/${gm.application_id}/${gm.assets.large_image}.png`;
+    } else if (gm.application_id) {
+      lImg = `https://dcdn.dstn.to/app-icons/${gm.application_id}.png`;
     }
-    if (gm.assets?.small_image) {
+
+    if (gm.assets && gm.assets.small_image) {
       sImg = gm.assets.small_image.startsWith("mp:")
         ? `https://media.discordapp.net/${gm.assets.small_image.replace("mp:", "")}`
         : `https://cdn.discordapp.com/app-assets/${gm.application_id}/${gm.assets.small_image}.png`;
@@ -64,19 +68,20 @@ function renderActivity(acts) {
     let html = `<div class="activity-name">${gm.name}</div>`;
     if (gm.details) html += `<div class="activity-state">${gm.details}</div>`;
     if (gm.state) html += `<div class="activity-state">${gm.state}</div>`;
-    if (gm.timestamps?.start) {
+    if (gm.timestamps && gm.timestamps.start) {
       const st = gm.timestamps.start;
       const update = () => {
-        const e = Date.now() - st,
-          h = Math.floor(e / 3600000),
-          m = Math.floor((e % 3600000) / 60000),
-          s = Math.floor((e % 60000) / 1000);
+        const e = Date.now() - st;
+        const h = Math.floor(e / 3600000);
+        const m = Math.floor((e % 3600000) / 60000);
+        const s = Math.floor((e % 60000) / 1000);
         const tEl = document.getElementById("game-timer");
-        if (tEl)
+        if (tEl) {
           tEl.innerText =
             h > 0
               ? `${h}:${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`
               : `${m}:${s.toString().padStart(2, "0")}`;
+        }
       };
       html += `<div class="game-time-text" id="game-timer"></div>`;
       setTimeout(update, 0);
@@ -86,9 +91,10 @@ function renderActivity(acts) {
   }
 
   if (sp) {
-    let img = sp.assets?.large_image
-      ? `https://i.scdn.co/image/${sp.assets.large_image.replace("spotify:", "")}`
-      : `https://cdn.discordapp.com/embed/avatars/0.png`;
+    let img =
+      sp.assets && sp.assets.large_image
+        ? `https://i.scdn.co/image/${sp.assets.large_image.replace("spotify:", "")}`
+        : `https://cdn.discordapp.com/embed/avatars/0.png`;
     localStorage.setItem(
       "last_spotify",
       JSON.stringify({
@@ -107,19 +113,19 @@ function renderActivity(acts) {
       const d = JSON.parse(c);
       lCard.innerHTML = `<div class="activity-body"><div class="activity-image-wrapper"><img src="${d.i}" class="large-image" style="filter:grayscale(40%);opacity:0.8;"></div><div class="activity-details"><div class="activity-name" style="color:#949ba4;">${d.t}</div><div class="activity-state" style="color:#72767d;">${d.a}</div><div class="spotify-progress-row"><span style="font-size:11px;font-weight:700;color:#1db954;text-transform:uppercase;margin-top:5px;">Recently Played</span></div></div></div>`;
     } else {
-      lCard.innerHTML = `<div class="activity-body"><div class="activity-image-wrapper" style="background:transparent;"><img src="empty.png" class="large-image" style="background:transparent;object-fit:contain;border-radius:0;"></div><div class="activity-details"><div class="activity-name" style="color:#f2f3f5;font-weight:600;font-size:14px;">Not Listening</div><div class="activity-state" style="color:#949ba4;font-size:13px;">No song currently playing</div></div></div>`;
+      lCard.innerHTML = `<div class="activity-body"><div class="activity-image-wrapper" style="background:transparent;"><img src="empty.png" class="large-image" style="background:transparent;object-fit:contain;border-radius:0;"></div><div class="activity-details"><div class="activity-name" style="color:#f2f3f5;font-weight:600;font-size:14px;">Not Listening</div><div class="activity-state" style="color:#949ba4;font-size:13px;">No song currently playing.</div></div></div>`;
     }
   }
 }
 
 function updateSp() {
   if (!spotifyData) return;
-  const t = spotifyData.e - spotifyData.s,
-    p = Date.now() - spotifyData.s,
-    pt = Math.min(100, Math.max(0, (p / t) * 100));
-  const f = document.getElementById("sp-fill"),
-    c = document.getElementById("sp-curr"),
-    e = document.getElementById("sp-end");
+  const t = spotifyData.e - spotifyData.s;
+  const p = Date.now() - spotifyData.s;
+  const pt = Math.min(100, Math.max(0, (p / t) * 100));
+  const f = document.getElementById("sp-fill");
+  const c = document.getElementById("sp-curr");
+  const e = document.getElementById("sp-end");
   if (f) f.style.width = `${pt}%`;
   if (c)
     c.innerText = `${Math.floor(p / 60000)}:${Math.floor((p % 60000) / 1000)
@@ -132,9 +138,9 @@ function updateSp() {
 }
 
 setInterval(() => {
-  const n = new Date(),
-    c = document.getElementById("clock"),
-    d = document.getElementById("date");
+  const n = new Date();
+  const c = document.getElementById("clock");
+  const d = document.getElementById("date");
   if (c)
     c.innerHTML = `${String(n.getHours()).padStart(2, "0")}:${String(n.getMinutes()).padStart(2, "0")}<span>${String(n.getSeconds()).padStart(2, "0")}</span>`;
   if (d)
@@ -147,10 +153,44 @@ setInterval(() => {
 }, 1000);
 
 connectLanyard();
+
 document.addEventListener("contextmenu", (e) => e.preventDefault());
 
-const btn = document.getElementById("send-secret-btn"),
-  inp = document.getElementById("secret-msg");
+document.addEventListener("keydown", (e) => {
+  if (e.key === "F12" || e.keyCode === 123) {
+    e.preventDefault();
+    return false;
+  }
+  if (e.ctrlKey && e.shiftKey && (e.key === "I" || e.key === "i")) {
+    e.preventDefault();
+    return false;
+  }
+  if (e.ctrlKey && e.shiftKey && (e.key === "J" || e.key === "j")) {
+    e.preventDefault();
+    return false;
+  }
+  if (e.ctrlKey && e.shiftKey && (e.key === "C" || e.key === "c")) {
+    e.preventDefault();
+    return false;
+  }
+  if (e.ctrlKey && (e.key === "U" || e.key === "u")) {
+    e.preventDefault();
+    return false;
+  }
+  if (e.ctrlKey && (e.key === "S" || e.key === "s")) {
+    e.preventDefault();
+    return false;
+  }
+});
+
+document.addEventListener("copy", (e) => {
+  e.preventDefault();
+  return false;
+});
+
+const btn = document.getElementById("send-secret-btn");
+const inp = document.getElementById("secret-msg");
+
 if (btn && inp) {
   btn.addEventListener("click", async () => {
     const msg = inp.value.trim();
