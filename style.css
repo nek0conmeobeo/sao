@@ -686,7 +686,7 @@ body {
   pointer-events: none;
 }
 .float-img {
-  position: absolute;
+  position: fixed !important;
   object-fit: contain;
   opacity: 1;
   width: clamp(200px, 22vw, 400px);
